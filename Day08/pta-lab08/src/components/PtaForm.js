@@ -7,17 +7,30 @@ export default class PtaForm extends Component {
       ptaID: '',
       ptaStudentName: '',
       ptaAge: '',
-      ptaGender: '',
+      ptaGender: 'Nam',
       ptaBirthday: '',
-      ptaBrithPlace: '',
+      ptaBirthPlace: 'HN',
       ptaAddress: ''
     };
   }
 
-  // Cập nhật state khi props thay đổi
+  // Cập nhật form khi nhận dữ liệu từ props
   componentDidUpdate(prevProps) {
-    if (prevProps.renderPtaStudent !== this.props.renderPtaStudent && this.props.renderPtaStudent) {
-      this.setState({ ...this.props.renderPtaStudent });
+    if (prevProps.renderPtaStudent !== this.props.renderPtaStudent) {
+      if (this.props.renderPtaStudent) {
+        this.setState({ ...this.props.renderPtaStudent });
+      } else {
+        // Nếu đang ở chế độ "Thêm mới", reset form
+        this.setState({
+          ptaID: '',
+          ptaStudentName: '',
+          ptaAge: '',
+          ptaGender: 'Nam',
+          ptaBirthday: '',
+          ptaBirthPlace: 'HN',
+          ptaAddress: ''
+        });
+      }
     }
   }
 
@@ -27,34 +40,40 @@ export default class PtaForm extends Component {
     this.setState({ [name]: value });
   };
 
-  // Gửi dữ liệu cập nhật khi nhấn "Lưu"
+  // Gửi dữ liệu khi nhấn "Lưu"
   handleSubmit = (event) => {
     event.preventDefault();
-    this.props.onPtaHandleUpdate(this.state);
+    if (this.props.isAddingNew) {
+      this.props.onPtaHandleSaveNew({ ...this.state, ptaID: `SV${Date.now()}` }); // Tạo mã SV tự động
+    } else {
+      this.props.onPtaHandleUpdate(this.state);
+    }
   };
 
   render() {
     return (
       <div className="card">
         <div className="card-body">
-          <h3 className="card-title">Thông tin sinh viên</h3>
+          <h3 className="card-title">{this.props.isAddingNew ? "Thêm sinh viên mới" : "Chỉnh sửa thông tin"}</h3>
           <form onSubmit={this.handleSubmit}>
-            <div className="form-group row">
-              <label className="col-sm-3 col-form-label">Mã sinh viên</label>
-              <div className="col-sm-9">
-                <input type="text" className="form-control" name="ptaID" value={this.state.ptaID} readOnly />
+            {!this.props.isAddingNew && (
+              <div className="form-group row">
+                <label className="col-sm-3 col-form-label">Mã sinh viên</label>
+                <div className="col-sm-9">
+                  <input type="text" className="form-control" name="ptaID" value={this.state.ptaID} readOnly />
+                </div>
               </div>
-            </div>
+            )}
             <div className="form-group row">
               <label className="col-sm-3 col-form-label">Tên sinh viên</label>
               <div className="col-sm-9">
-                <input type="text" className="form-control" name="ptaStudentName" value={this.state.ptaStudentName} onChange={this.handleChange} />
+                <input type="text" className="form-control" name="ptaStudentName" value={this.state.ptaStudentName} onChange={this.handleChange} required />
               </div>
             </div>
             <div className="form-group row">
               <label className="col-sm-3 col-form-label">Tuổi</label>
               <div className="col-sm-9">
-                <input type="text" className="form-control" name="ptaAge" value={this.state.ptaAge} onChange={this.handleChange} />
+                <input type="number" className="form-control" name="ptaAge" value={this.state.ptaAge} onChange={this.handleChange} required />
               </div>
             </div>
             <div className="form-group row">
@@ -69,13 +88,13 @@ export default class PtaForm extends Component {
             <div className="form-group row">
               <label className="col-sm-3 col-form-label">Ngày sinh</label>
               <div className="col-sm-9">
-                <input className="form-control" name="ptaBirthday" value={this.state.ptaBirthday} onChange={this.handleChange} />
+                <input type="date" className="form-control" name="ptaBirthday" value={this.state.ptaBirthday} onChange={this.handleChange} required />
               </div>
             </div>
             <div className="form-group row">
               <label className="col-sm-3 col-form-label">Nơi sinh</label>
               <div className="col-sm-9">
-                <select className="form-control" name="ptaBrithPlace" value={this.state.ptaBrithPlace} onChange={this.handleChange}>
+                <select className="form-control" name="ptaBirthPlace" value={this.state.ptaBirthPlace} onChange={this.handleChange}>
                   <option value="HN">Hà Nội</option>
                   <option value="TpHCM">TP. Hồ Chí Minh</option>
                   <option value="ĐN">Đà Nẵng</option>
@@ -87,10 +106,10 @@ export default class PtaForm extends Component {
             <div className="form-group row">
               <label className="col-sm-3 col-form-label">Địa chỉ</label>
               <div className="col-sm-9">
-                <textarea className="form-control" name="ptaAddress" value={this.state.ptaAddress} onChange={this.handleChange} />
+                <textarea className="form-control" name="ptaAddress" value={this.state.ptaAddress} onChange={this.handleChange} required />
               </div>
             </div>
-            <button type="submit" className="btn btn-primary me-2">Lưu</button>
+            <button type="submit" className="btn btn-primary me-2">{this.props.isAddingNew ? "Thêm" : "Lưu"}</button>
           </form>
         </div>
       </div>
