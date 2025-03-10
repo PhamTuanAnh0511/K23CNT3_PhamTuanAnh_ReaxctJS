@@ -43,10 +43,17 @@ export default class PtaForm extends Component {
   // Gửi dữ liệu khi nhấn "Lưu"
   handleSubmit = (event) => {
     event.preventDefault();
+    const { ptaID, ...otherState } = this.state;
+
+    if (!ptaID || ptaID.trim() === "") {
+        alert("Vui lòng nhập mã sinh viên (ptaID).");
+        return;
+    }
+
     if (this.props.isAddingNew) {
-      this.props.onPtaHandleSaveNew({ ...this.state, ptaID: `SV${Date.now()}` }); // Tạo mã SV tự động
+        this.props.onPtaHandleSaveNew({ ptaID, ...otherState });
     } else {
-      this.props.onPtaHandleUpdate(this.state);
+        this.props.onPtaHandleUpdate({ ptaID, ...otherState });
     }
   };
 
@@ -56,11 +63,13 @@ export default class PtaForm extends Component {
         <div className="card-body">
           <h3 className="card-title">{this.props.isAddingNew ? "Thêm sinh viên mới" : "Chỉnh sửa thông tin"}</h3>
           <form onSubmit={this.handleSubmit}>
-            {!this.props.isAddingNew && (
+            
+            {/* Nhập mã sinh viên khi thêm mới */}
+            {this.props.isAddingNew && (
               <div className="form-group row">
                 <label className="col-sm-3 col-form-label">Mã sinh viên</label>
                 <div className="col-sm-9">
-                  <input type="text" className="form-control" name="ptaID" value={this.state.ptaID} readOnly />
+                  <input type="text" className="form-control" name="ptaID" value={this.state.ptaID} onChange={this.handleChange} required />
                 </div>
               </div>
             )}
