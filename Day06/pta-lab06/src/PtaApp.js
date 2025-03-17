@@ -19,13 +19,14 @@ class PtaApp extends Component {
   render() {
     return (
       <div className='container border my-3 bg-white'>
-          <h1 className='text-center'>Event Form - Demo</h1>
+          <h1 className='text-center'>Phạm Tuấn Anh Event Form - Demo</h1>
           <hr/>
           <PtaEventForm1 />
           <PtaEventForm2 />
           <PtaEventForm3 />
           <PtaEventForm4 />
           <PtaEventForm5  onPtaHandleSubmit={this.ptaHandleSubmitForm}  />
+          <PtaEventForm5 onPtaHandleSubmit={this.props.onPtaHandleSubmit} />
           <PtaRenderCon />
           <PtaRenderArray />
           <PtaRenderListObject />
