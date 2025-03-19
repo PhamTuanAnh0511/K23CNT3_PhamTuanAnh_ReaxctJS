@@ -5,7 +5,7 @@ export default function PtaReadMockAPI() {
     // khởi tạo state 
     const [ptaListUser, setPtaListUser] = useState([])
     // api
-    const ptaApiOnline = "https://67d8d4aa00348dd3e2a85ce1.mockapi.io/k23cnt1_trinhvanchung/pta_users"
+    const ptaApiOnline = "https://67da77a535c87309f52ca47b.mockapi.io/K23CNT3-PhamTuanAnh/pta_users"
     // Đọc dữ liệu từ api bằng axios
     useEffect(()=>{
         axios

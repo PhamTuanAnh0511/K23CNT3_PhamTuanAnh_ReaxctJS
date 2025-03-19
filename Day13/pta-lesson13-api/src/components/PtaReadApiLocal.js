@@ -1,46 +1,69 @@
-import React, { useEffect, useState } from 'react'
-import axios from 'axios'
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 export default function PtaReadApiLocal() {
-    // khởi tạo state
-    const [ptaListUser, setPtaListUser] = useState([])
-    // đọc dữ liệu từ api local  và set cho ptaListUser
-    const apiUrl = "http://localhost:3001/users"
-    // Lấy danh sách từ apiUrl
-    useEffect(()=>{
+    // Initialize state
+    const [ptaListUser, setPtaListUser] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    const apiUrl = "http://localhost:3001/users";
+
+    // Fetch data from API
+    useEffect(() => {
         axios
             .get(apiUrl)
-            .then((ptaResponse)=>{
-                setPtaListUser(ptaResponse.data)
+            .then((response) => {
+                setPtaListUser(response.data);
+                setLoading(false); // Data fetched, stop loading
             })
-            .catch((error)=>{
-                console.log("Lỗi");
-            })
-    },[])
+            .catch((error) => {
+                setError("Error fetching data from the API.");
+                setLoading(false);
+                console.log("Error:", error);
+            });
+    }, []);
 
-  return (
-    <div>
-        <h2>Đọc dữ liệu từ API Local</h2>
-        <table className='table table-bordered'>
-            <thead>
-                <tr>
-                    <th>FullName</th>
-                    <th>Age</th>
-                </tr>
-            </thead>
-            <tbody>
-                {
-                    ptaListUser.map((ptaItem, index)=>{
-                        return (
-                            <tr>
-                                <td>{ptaItem.fullName}</td>
-                                <td>{ptaItem.age}</td>
-                            </tr>
-                        )
-                    })
-                }
-            </tbody>
-        </table>
-    </div>
-  )
+    return (
+        <div className="container mt-4">
+            <h2 className="text-center mb-4">Danh Sách Người Dùng</h2>
+            
+            {/* Display error message */}
+            {error && <div className="alert alert-danger">{error}</div>}
+
+            {/* Display loading spinner */}
+            {loading ? (
+                <div className="text-center">
+                    <div className="spinner-border text-primary" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            ) : (
+                <table className="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Full Name</th>
+                            <th>Age</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            ptaListUser.length > 0 ? (
+                                ptaListUser.map((ptaItem) => (
+                                    <tr key={ptaItem.id}> {/* Unique key for each row */}
+                                        <td>{ptaItem.fullName}</td>
+                                        <td>{ptaItem.age}</td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="2" className="text-center">No data available</td>
+                                </tr>
+                            )
+                        }
+                    </tbody>
+                </table>
+            )}
+        </div>
+    );
 }
