@@ -6,7 +6,7 @@ export default function PtaHome() {
         <h2>Đây là trang chủ</h2>
         <img 
           src='https://cdn.haitrieu.com/wp-content/uploads/2022/05/Logo-Adam-Store-Black.png' 
-          alt='Trà' 
+          alt='logo' 
           style={{ width: '600px', marginTop: '20px' }} // Adjusted the width to 100px
         />
     </div>
